@@ -4,10 +4,10 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import info.nukoneko.cuc.android.kidspos.model.api.APIService
-import info.nukoneko.cuc.android.kidspos.di.GlobalConfig
 import info.nukoneko.cuc.android.kidspos.event.EventBus
 import info.nukoneko.cuc.android.kidspos.event.SystemEvent
+import info.nukoneko.cuc.android.kidspos.model.api.APIService
+import info.nukoneko.cuc.android.kidspos.util.Config
 import info.nukoneko.cuc.android.kidspos.util.Mode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,7 @@ import kotlin.coroutines.CoroutineContext
 
 class CalculatorDialogViewModel(
         private val api: APIService,
-        private val config: GlobalConfig,
+        private val config: Config,
         private val event: EventBus) : ViewModel(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext

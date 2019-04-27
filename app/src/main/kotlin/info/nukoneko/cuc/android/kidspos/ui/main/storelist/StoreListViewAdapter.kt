@@ -6,7 +6,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import info.nukoneko.cuc.android.kidspos.R
 import info.nukoneko.cuc.android.kidspos.databinding.ItemStoreListBinding
-import info.nukoneko.cuc.android.kidspos.model.entity.Store
 
 class StoreListViewAdapter : RecyclerView.Adapter<StoreListViewAdapter.ViewHolder>() {
 

@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.webkit.URLUtil
 import androidx.appcompat.app.AppCompatActivity
 import com.google.zxing.integration.android.IntentIntegrator
-import info.nukoneko.cuc.android.kidspos.di.GlobalConfig
+import info.nukoneko.cuc.android.kidspos.util.Config
 import org.koin.android.ext.android.inject
 
 class SettingActivity : AppCompatActivity() {
-    private val config: GlobalConfig by inject()
+    private val config: Config by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

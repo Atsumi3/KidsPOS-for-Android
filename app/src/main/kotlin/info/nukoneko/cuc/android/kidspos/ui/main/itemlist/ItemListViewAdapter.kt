@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import info.nukoneko.cuc.android.kidspos.R
-import info.nukoneko.cuc.android.kidspos.model.entity.Item
 import java.util.*
 
 class ItemListViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

@@ -4,76 +4,71 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import info.nukoneko.cuc.android.kidspos.ext.CoroutinePlugin
+import info.nukoneko.cuc.android.kidspos.extensions.mutableLiveDataOf
 import info.nukoneko.cuc.android.kidspos.model.api.APIService
 import info.nukoneko.cuc.android.kidspos.model.api.RequestStatus
-import info.nukoneko.cuc.android.kidspos.di.GlobalConfig
 import info.nukoneko.cuc.android.kidspos.model.entity.Store
+import info.nukoneko.cuc.android.kidspos.util.Config
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 class StoreListViewModel(
         private val api: APIService,
-        private val config: GlobalConfig) : ViewModel(), CoroutineScope {
+        private val config: Config) : ViewModel(), CoroutineScope {
     override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
+        get() = CoroutinePlugin.mainDispatcher
 
-    private val data = MutableLiveData<List<Store>>()
-    fun getData(): LiveData<List<Store>> = data
+    private val _data = MutableLiveData<List<Store>>()
+    val data: LiveData<List<Store>> = _data
 
-    private val progressVisibility = MutableLiveData<Int>()
-    fun getProgressVisibility(): LiveData<Int> = progressVisibility
+    private val _presentErrorAlert = MutableLiveData<String>()
+    val presentErrorAlert: LiveData<String> = _presentErrorAlert
 
-    private val recyclerViewVisibility = MutableLiveData<Int>()
-    fun getRecyclerViewVisibility(): LiveData<Int> = recyclerViewVisibility
+    private val _dismissView = MutableLiveData<Unit>()
+    val dismissView: LiveData<Unit> = _dismissView
 
-    private val errorButtonVisibility = MutableLiveData<Int>()
-    fun getErrorButtonVisibility(): LiveData<Int> = errorButtonVisibility
-
-    var listener: Listener? = null
+    private val _progressVisibility = MutableLiveData<Int>()
+    val progressVisibility: LiveData<Int> = _progressVisibility
+    private val _listVisibility = mutableLiveDataOf(View.GONE)
+    val listVisibility: LiveData<Int> = _listVisibility
+    private val _errorButtonVisibility = mutableLiveDataOf(View.GONE)
+    val errorButtonVisibility: LiveData<Int> = _errorButtonVisibility
 
     private var listFetchRequestStatus: RequestStatus<List<Store>> = RequestStatus.IDLE()
         set(value) {
             field = value
             when (value) {
                 is RequestStatus.IDLE -> {
-                    progressVisibility.postValue(View.GONE)
-                    recyclerViewVisibility.postValue(View.GONE)
-                    errorButtonVisibility.postValue(View.GONE)
+                    _progressVisibility.postValue(View.GONE)
+                    _listVisibility.postValue(View.GONE)
+                    _errorButtonVisibility.postValue(View.GONE)
                 }
                 is RequestStatus.REQUESTING -> {
-                    progressVisibility.postValue(View.VISIBLE)
-                    recyclerViewVisibility.postValue(View.GONE)
-                    errorButtonVisibility.postValue(View.GONE)
+                    _progressVisibility.postValue(View.VISIBLE)
+                    _listVisibility.postValue(View.GONE)
+                    _errorButtonVisibility.postValue(View.GONE)
                 }
                 is RequestStatus.SUCCESS -> {
-                    progressVisibility.postValue(View.GONE)
-                    data.postValue(value.value)
+                    _progressVisibility.postValue(View.GONE)
+                    _data.postValue(value.value)
                     if (value.value.isNotEmpty()) {
-                        recyclerViewVisibility.postValue(View.VISIBLE)
+                        _listVisibility.postValue(View.VISIBLE)
+                        _errorButtonVisibility.postValue(View.GONE)
                     } else {
-                        errorButtonVisibility.postValue(View.VISIBLE)
+                        _listVisibility.postValue(View.GONE)
+                        _errorButtonVisibility.postValue(View.VISIBLE)
                     }
                 }
                 is RequestStatus.FAILURE -> {
-                    progressVisibility.postValue(View.GONE)
-                    errorButtonVisibility.postValue(View.VISIBLE)
-                    listener?.onShouldShowErrorDialog(value.error.localizedMessage)
+                    _progressVisibility.postValue(View.GONE)
+                    _errorButtonVisibility.postValue(View.VISIBLE)
+                    _presentErrorAlert.postValue(value.error.localizedMessage)
                 }
             }
         }
-
-    init {
-        recyclerViewVisibility.value = View.GONE
-        errorButtonVisibility.value = View.GONE
-    }
-
-    override fun onCleared() {
-        listener = null
-        super.onCleared()
-    }
 
     fun onResume() {
         fetchStores()
@@ -81,7 +76,7 @@ class StoreListViewModel(
 
     fun onSelect(store: Store) {
         config.currentStore = store
-        listener?.onDismiss()
+        _dismissView.postValue(Unit)
     }
 
     fun onReload(@Suppress("UNUSED_PARAMETER") view: View?) {
@@ -89,7 +84,7 @@ class StoreListViewModel(
     }
 
     fun onClose(@Suppress("UNUSED_PARAMETER") view: View?) {
-        listener?.onDismiss()
+        _dismissView.postValue(Unit)
     }
 
     private fun fetchStores() {
@@ -106,13 +101,7 @@ class StoreListViewModel(
         }
     }
 
-    private suspend fun requestFetchStores() = withContext(Dispatchers.IO) {
-        api.fetchStoresAsync().await()
-    }
-
-    interface Listener {
-        fun onShouldShowErrorDialog(message: String)
-
-        fun onDismiss()
-    }
+    private suspend fun requestFetchStores() = withContext(CoroutinePlugin.ioDispatcher) {
+        api.fetchStoresAsync()
+    }.await()
 }

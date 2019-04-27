@@ -9,7 +9,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import info.nukoneko.cuc.android.kidspos.R
 import info.nukoneko.cuc.android.kidspos.databinding.FragmentCalculatorDialogBinding
-import info.nukoneko.cuc.android.kidspos.model.entity.Item
 import info.nukoneko.cuc.android.kidspos.extensions.lazyWithArgs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

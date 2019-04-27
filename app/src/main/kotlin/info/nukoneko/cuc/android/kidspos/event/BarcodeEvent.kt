@@ -1,8 +1,5 @@
 package info.nukoneko.cuc.android.kidspos.event
 
-import info.nukoneko.cuc.android.kidspos.model.entity.Item
-import info.nukoneko.cuc.android.kidspos.model.entity.Staff
-
 sealed class BarcodeEvent : Event {
     data class ReadReceiptFailed(val error: Throwable) : BarcodeEvent()
     data class ReadItemSuccess(val item: info.nukoneko.cuc.android.kidspos.model.entity.Item) : BarcodeEvent()

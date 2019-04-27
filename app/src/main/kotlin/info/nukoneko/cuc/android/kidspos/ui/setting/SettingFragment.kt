@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.zxing.integration.android.IntentIntegrator
 import info.nukoneko.cuc.android.kidspos.R
-import info.nukoneko.cuc.android.kidspos.di.GlobalConfig
+import info.nukoneko.cuc.android.kidspos.util.Config
 import info.nukoneko.cuc.android.kidspos.util.Mode
 import kotlinx.android.synthetic.main.fragment_setting.*
 import org.koin.android.ext.android.inject
@@ -17,7 +17,7 @@ import org.koin.android.ext.android.inject
  * このクラスはDataBinding + ViewModelを使っていない
  */
 class SettingFragment : Fragment() {
-    private val config: GlobalConfig by inject()
+    private val config: Config by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_setting, container, false)

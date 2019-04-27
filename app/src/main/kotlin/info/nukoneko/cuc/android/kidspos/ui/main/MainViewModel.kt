@@ -2,15 +2,15 @@ package info.nukoneko.cuc.android.kidspos.ui.main
 
 import androidx.lifecycle.ViewModel
 import info.nukoneko.cuc.android.kidspos.ProjectSettings
-import info.nukoneko.cuc.android.kidspos.di.GlobalConfig
 import info.nukoneko.cuc.android.kidspos.event.BarcodeEvent
 import info.nukoneko.cuc.android.kidspos.event.EventBus
 import info.nukoneko.cuc.android.kidspos.event.SystemEvent
 import info.nukoneko.cuc.android.kidspos.model.api.APIService
-import info.nukoneko.cuc.android.kidspos.model.util.DemoSupportUtil
 import info.nukoneko.cuc.android.kidspos.model.entity.Item
 import info.nukoneko.cuc.android.kidspos.model.entity.Staff
+import info.nukoneko.cuc.android.kidspos.model.util.DemoSupportUtil
 import info.nukoneko.cuc.android.kidspos.util.BarcodeKind
+import info.nukoneko.cuc.android.kidspos.util.Config
 import info.nukoneko.cuc.android.kidspos.util.Mode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,12 +21,8 @@ import org.greenrobot.eventbus.ThreadMode
 import java.io.IOException
 import kotlin.coroutines.CoroutineContext
 
-//private fun Item.createDummyItem(barcode: String): Item {
-//
-//}
-
 class MainViewModel(private val api: APIService,
-                    private val config: GlobalConfig,
+                    private val config: Config,
                     private val eventBus: EventBus) : ViewModel(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main

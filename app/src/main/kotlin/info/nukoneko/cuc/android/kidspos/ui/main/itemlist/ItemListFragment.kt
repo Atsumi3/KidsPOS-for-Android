@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import info.nukoneko.cuc.android.kidspos.R
 import info.nukoneko.cuc.android.kidspos.databinding.FragmentItemListBinding
-import info.nukoneko.cuc.android.kidspos.model.entity.Item
 import info.nukoneko.cuc.android.kidspos.ui.main.calculate.CalculatorDialogFragment
 import org.koin.android.ext.android.inject
 

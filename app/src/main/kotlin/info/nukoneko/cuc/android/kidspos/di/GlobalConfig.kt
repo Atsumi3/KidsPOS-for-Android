@@ -3,17 +3,19 @@ package info.nukoneko.cuc.android.kidspos.di
 import android.content.Context
 import android.preference.PreferenceManager
 import com.google.gson.GsonBuilder
-import info.nukoneko.cuc.android.kidspos.model.entity.Staff
-import info.nukoneko.cuc.android.kidspos.model.entity.Store
 import info.nukoneko.cuc.android.kidspos.event.EventBus
 import info.nukoneko.cuc.android.kidspos.event.SystemEvent
+import info.nukoneko.cuc.android.kidspos.model.entity.Staff
+import info.nukoneko.cuc.android.kidspos.model.entity.Store
+import info.nukoneko.cuc.android.kidspos.util.Config
+import info.nukoneko.cuc.android.kidspos.util.Config.Companion.DEFAULT_SERVER_INFO
 import info.nukoneko.cuc.android.kidspos.util.Mode
 
-class GlobalConfig(context: Context, private val eventBus: EventBus) {
+open class GlobalConfig(context: Context, private val eventBus: EventBus) : Config {
     private val preference = PreferenceManager.getDefaultSharedPreferences(context.applicationContext)
     private val gson = GsonBuilder().create()
 
-    var currentServerAddress: String
+    override var currentServerAddress: String
         get() = preference.getString(
                 KEY_SERVER_INFO,
                 DEFAULT_SERVER_INFO
@@ -23,7 +25,7 @@ class GlobalConfig(context: Context, private val eventBus: EventBus) {
             eventBus.post(SystemEvent.ServerAddressChanged(value))
         }
 
-    var currentRunningMode: Mode
+    override var currentRunningMode: Mode
         get() = Mode.nameOf(preference.getString(
                 KEY_RUNNING_MODE,
                 Mode.PRACTICE.name
@@ -33,7 +35,7 @@ class GlobalConfig(context: Context, private val eventBus: EventBus) {
             eventBus.post(SystemEvent.RunningModeChanged(value))
         }
 
-    var currentStore: Store?
+    override var currentStore: Store?
         get() {
             return preference.getString(KEY_STORE, null)?.let {
                 return gson.fromJson(it, Store::class.java)
@@ -47,7 +49,7 @@ class GlobalConfig(context: Context, private val eventBus: EventBus) {
             eventBus.post(SystemEvent.SelectShop(value))
         }
 
-    var currentStaff: Staff?
+    override var currentStaff: Staff?
         get() {
             return preference.getString(KEY_STAFF, null)?.let {
                 return gson.fromJson(it, Staff::class.java)
@@ -63,7 +65,6 @@ class GlobalConfig(context: Context, private val eventBus: EventBus) {
     companion object {
         const val KEY_SERVER_INFO = "setting_server_info"
         const val KEY_RUNNING_MODE = "setting_running_mode"
-        const val DEFAULT_SERVER_INFO = "http://192.168.0.220:8080"
         const val KEY_STORE = "store"
         const val KEY_STAFF = "staff"
     }

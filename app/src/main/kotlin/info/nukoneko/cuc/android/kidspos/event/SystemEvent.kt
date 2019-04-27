@@ -1,7 +1,5 @@
 package info.nukoneko.cuc.android.kidspos.event
 
-import info.nukoneko.cuc.android.kidspos.model.entity.Sale
-import info.nukoneko.cuc.android.kidspos.model.entity.Store
 import info.nukoneko.cuc.android.kidspos.util.Mode
 
 sealed class SystemEvent : Event {

@@ -10,23 +10,14 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import info.nukoneko.cuc.android.kidspos.R
 import info.nukoneko.cuc.android.kidspos.databinding.FragmentStoreListDialogBinding
 import info.nukoneko.cuc.android.kidspos.model.entity.Store
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class StoreListDialogFragment : DialogFragment() {
-    private lateinit var binding: FragmentStoreListDialogBinding
     private val myViewModel: StoreListViewModel by viewModel()
-    private val listener = object : StoreListViewModel.Listener {
-        override fun onDismiss() {
-            dismiss()
-        }
-
-        override fun onShouldShowErrorDialog(message: String) {
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        }
-    }
 
     private val adapterListener = object : StoreListViewAdapter.Listener {
         override fun onStoreSelect(store: Store) {
@@ -41,18 +32,19 @@ class StoreListDialogFragment : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_store_list_dialog, container, false)
+        val binding: FragmentStoreListDialogBinding =
+                DataBindingUtil.inflate(inflater, R.layout.fragment_store_list_dialog,
+                        container, false)
         binding.lifecycleOwner = this
-        myViewModel.listener = listener
         binding.viewModel = myViewModel
+        setupSubscriber()
+        setupList(binding.recyclerView)
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        setupRecyclerView()
-        setupSubscriber()
     }
 
     override fun onResume() {
@@ -60,16 +52,21 @@ class StoreListDialogFragment : DialogFragment() {
         myViewModel.onResume()
     }
 
-    private fun setupRecyclerView() {
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+    private fun setupList(list: RecyclerView) {
+        list.adapter = adapter
+        list.addItemDecoration(DividerItemDecoration(context!!, DividerItemDecoration.VERTICAL))
+        list.layoutManager = LinearLayoutManager(context)
     }
 
     private fun setupSubscriber() {
-        myViewModel.getData().observe(this, Observer<List<Store>> { stores ->
-            val newData = stores ?: emptyList()
-            adapter.data = newData
+        myViewModel.dismissView.observe(this, Observer {
+            dismiss()
+        })
+        myViewModel.presentErrorAlert.observe(this, Observer { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        })
+        myViewModel.data.observe(this, Observer { stores ->
+            adapter.data = stores ?: emptyList()
         })
     }
 

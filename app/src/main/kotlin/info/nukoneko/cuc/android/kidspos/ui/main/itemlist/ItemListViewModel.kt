@@ -6,16 +6,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import info.nukoneko.cuc.android.kidspos.R
-import info.nukoneko.cuc.android.kidspos.di.GlobalConfig
-import info.nukoneko.cuc.android.kidspos.model.entity.Item
 import info.nukoneko.cuc.android.kidspos.event.BarcodeEvent
 import info.nukoneko.cuc.android.kidspos.event.EventBus
 import info.nukoneko.cuc.android.kidspos.event.SystemEvent
+import info.nukoneko.cuc.android.kidspos.util.Config
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 
 class ItemListViewModel(
-        private val config: GlobalConfig,
+        private val config: Config,
         private val eventBus: EventBus) : ViewModel() {
 
     private val currentPrice = MutableLiveData<String>()
