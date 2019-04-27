@@ -4,10 +4,10 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import info.nukoneko.cuc.android.kidspos.api.APIService
-import info.nukoneko.cuc.android.kidspos.api.RequestStatus
+import info.nukoneko.cuc.android.kidspos.model.api.APIService
+import info.nukoneko.cuc.android.kidspos.model.api.RequestStatus
 import info.nukoneko.cuc.android.kidspos.di.GlobalConfig
-import info.nukoneko.cuc.android.kidspos.entity.Store
+import info.nukoneko.cuc.android.kidspos.model.entity.Store
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,26 +34,33 @@ class StoreListViewModel(
 
     var listener: Listener? = null
 
-    private var requestStatus: RequestStatus = RequestStatus.IDLE
+    private var listFetchRequestStatus: RequestStatus<List<Store>> = RequestStatus.IDLE()
         set(value) {
             field = value
             when (value) {
-                RequestStatus.IDLE -> {
+                is RequestStatus.IDLE -> {
                     progressVisibility.postValue(View.GONE)
                     recyclerViewVisibility.postValue(View.GONE)
                     errorButtonVisibility.postValue(View.GONE)
                 }
-                RequestStatus.REQUESTING -> {
+                is RequestStatus.REQUESTING -> {
                     progressVisibility.postValue(View.VISIBLE)
                     recyclerViewVisibility.postValue(View.GONE)
                     errorButtonVisibility.postValue(View.GONE)
                 }
-                RequestStatus.SUCCESS -> {
+                is RequestStatus.SUCCESS -> {
                     progressVisibility.postValue(View.GONE)
+                    data.postValue(value.value)
+                    if (value.value.isNotEmpty()) {
+                        recyclerViewVisibility.postValue(View.VISIBLE)
+                    } else {
+                        errorButtonVisibility.postValue(View.VISIBLE)
+                    }
                 }
-                RequestStatus.FAILURE -> {
+                is RequestStatus.FAILURE -> {
                     progressVisibility.postValue(View.GONE)
                     errorButtonVisibility.postValue(View.VISIBLE)
+                    listener?.onShouldShowErrorDialog(value.error.localizedMessage)
                 }
             }
         }
@@ -86,39 +93,21 @@ class StoreListViewModel(
     }
 
     private fun fetchStores() {
-        if (requestStatus == RequestStatus.REQUESTING) {
+        if (listFetchRequestStatus is RequestStatus.REQUESTING) {
             return
         }
-        requestStatus = RequestStatus.REQUESTING
+        listFetchRequestStatus = RequestStatus.REQUESTING()
         launch {
             try {
-                val stores: List<Store> = requestFetchStores()
-                onFetchStoresSuccess(stores)
-                requestStatus = RequestStatus.SUCCESS
+                listFetchRequestStatus = RequestStatus.SUCCESS(requestFetchStores())
             } catch (e: Throwable) {
-                onFetchStoresFailure(e)
-                requestStatus = RequestStatus.FAILURE
+                listFetchRequestStatus = RequestStatus.FAILURE(e)
             }
         }
     }
 
     private suspend fun requestFetchStores() = withContext(Dispatchers.IO) {
-        api.fetchStores().await()
-    }
-
-    private fun onFetchStoresSuccess(stores: List<Store>) {
-        data.postValue(stores)
-        if (!stores.isEmpty()) {
-            recyclerViewVisibility.postValue(View.VISIBLE)
-        } else {
-            errorButtonVisibility.postValue(View.VISIBLE)
-        }
-        requestStatus = RequestStatus.SUCCESS
-    }
-
-    private fun onFetchStoresFailure(error: Throwable) {
-        listener?.onShouldShowErrorDialog(error.localizedMessage)
-        requestStatus = RequestStatus.FAILURE
+        api.fetchStoresAsync().await()
     }
 
     interface Listener {

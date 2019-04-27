@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import info.nukoneko.cuc.android.kidspos.R
 import info.nukoneko.cuc.android.kidspos.databinding.FragmentCalculatorDialogBinding
-import info.nukoneko.cuc.android.kidspos.entity.Item
+import info.nukoneko.cuc.android.kidspos.model.entity.Item
 import info.nukoneko.cuc.android.kidspos.extensions.lazyWithArgs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +21,7 @@ class CalculatorDialogFragment : DialogFragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
     private val totalPrice: Int by lazyWithArgs(EXTRA_SUM_RIVER)
-    private val items: List<Item> by lazyWithArgs(EXTRA_SALE_ITEMS)
+    private val items: List<info.nukoneko.cuc.android.kidspos.model.entity.Item> by lazyWithArgs(EXTRA_SALE_ITEMS)
 
     private lateinit var binding: FragmentCalculatorDialogBinding
     private val myViewModel: CalculatorDialogViewModel by viewModel()
@@ -79,7 +79,7 @@ class CalculatorDialogFragment : DialogFragment(), CoroutineScope {
         private const val EXTRA_SUM_RIVER = "sum_price"
         private const val EXTRA_SALE_ITEMS = "sales_model"
 
-        fun newInstance(saleItems: ArrayList<Item>) = CalculatorDialogFragment().apply {
+        fun newInstance(saleItems: ArrayList<info.nukoneko.cuc.android.kidspos.model.entity.Item>) = CalculatorDialogFragment().apply {
             arguments = Bundle().apply {
                 putInt(EXTRA_SUM_RIVER, saleItems.sumBy { it.price })
                 putParcelableArrayList(EXTRA_SALE_ITEMS, saleItems)

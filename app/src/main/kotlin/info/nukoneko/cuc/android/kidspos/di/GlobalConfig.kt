@@ -3,8 +3,8 @@ package info.nukoneko.cuc.android.kidspos.di
 import android.content.Context
 import android.preference.PreferenceManager
 import com.google.gson.GsonBuilder
-import info.nukoneko.cuc.android.kidspos.entity.Staff
-import info.nukoneko.cuc.android.kidspos.entity.Store
+import info.nukoneko.cuc.android.kidspos.model.entity.Staff
+import info.nukoneko.cuc.android.kidspos.model.entity.Store
 import info.nukoneko.cuc.android.kidspos.event.EventBus
 import info.nukoneko.cuc.android.kidspos.event.SystemEvent
 import info.nukoneko.cuc.android.kidspos.util.Mode

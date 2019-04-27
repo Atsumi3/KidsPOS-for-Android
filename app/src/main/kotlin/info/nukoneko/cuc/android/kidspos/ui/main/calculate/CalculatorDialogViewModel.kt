@@ -4,10 +4,8 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import info.nukoneko.cuc.android.kidspos.api.APIService
+import info.nukoneko.cuc.android.kidspos.model.api.APIService
 import info.nukoneko.cuc.android.kidspos.di.GlobalConfig
-import info.nukoneko.cuc.android.kidspos.entity.Item
-import info.nukoneko.cuc.android.kidspos.entity.Sale
 import info.nukoneko.cuc.android.kidspos.event.EventBus
 import info.nukoneko.cuc.android.kidspos.event.SystemEvent
 import info.nukoneko.cuc.android.kidspos.util.Mode
@@ -45,7 +43,7 @@ class CalculatorDialogViewModel(
     @Suppress("unused")
     fun getDepositText(): LiveData<String> = depositText
 
-    private lateinit var items: List<Item>
+    private lateinit var items: List<info.nukoneko.cuc.android.kidspos.model.entity.Item>
 
     init {
         totalPriceText.value = "0"
@@ -53,7 +51,7 @@ class CalculatorDialogViewModel(
         deposit = 0
     }
 
-    fun setup(items: List<Item>, totalPrice: Int) {
+    fun setup(items: List<info.nukoneko.cuc.android.kidspos.model.entity.Item>, totalPrice: Int) {
         this.items = items
         this.totalPriceText.value = "$totalPrice"
     }
@@ -70,7 +68,7 @@ class CalculatorDialogViewModel(
 
         launch {
             try {
-                val sale: Sale? = requestCreateSale()
+                val sale: info.nukoneko.cuc.android.kidspos.model.entity.Sale? = requestCreateSale()
                 event.post(SystemEvent.SentSaleSuccess(sale))
                 listener?.onDismiss()
             } catch (e: Throwable) {
@@ -90,7 +88,7 @@ class CalculatorDialogViewModel(
     private suspend fun requestCreateSale() = withContext(Dispatchers.IO) {
         val ids = items.map { it.id.toString() }
         val joinedIds = ids.joinToString(",")
-        api.createSale(config.currentStore?.id ?: 0, config.currentStaff?.barcode
+        api.createSaleAsync(config.currentStore?.id ?: 0, config.currentStaff?.barcode
                 ?: "", deposit, joinedIds).await()
     }
 

@@ -3,7 +3,7 @@ package info.nukoneko.cuc.android.kidspos.ui.main.storelist
 import android.view.View
 import androidx.databinding.BaseObservable
 import androidx.databinding.Bindable
-import info.nukoneko.cuc.android.kidspos.entity.Store
+import info.nukoneko.cuc.android.kidspos.model.entity.Store
 
 class ItemStoreListContentViewModel(private var store: Store, private val listener: Listener?) : BaseObservable() {
     @Bindable

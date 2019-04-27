@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import info.nukoneko.cuc.android.kidspos.R
-import info.nukoneko.cuc.android.kidspos.entity.Item
+import info.nukoneko.cuc.android.kidspos.model.entity.Item
 import java.util.*
 
 class ItemListViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -21,19 +21,19 @@ class ItemListViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    private val data = ArrayList<Item>()
+    private val data = ArrayList<info.nukoneko.cuc.android.kidspos.model.entity.Item>()
 
     override fun getItemCount(): Int {
         return data.size
     }
 
-    fun setItems(items: List<Item>) {
+    fun setItems(items: List<info.nukoneko.cuc.android.kidspos.model.entity.Item>) {
         data.clear()
         data.addAll(items)
         notifyDataSetChanged()
     }
 
-    fun add(item: Item) {
+    fun add(item: info.nukoneko.cuc.android.kidspos.model.entity.Item) {
         data.add(0, item)
         notifyItemInserted(0)
     }
@@ -48,7 +48,7 @@ class ItemListViewAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             private val itemNameText: TextView = view.findViewById(R.id.item_name)
             private val itemPriceText: TextView = view.findViewById(R.id.item_price)
             private val itemBarcodeText: TextView = view.findViewById(R.id.item_barcode)
-            fun bind(data: Item) {
+            fun bind(data: info.nukoneko.cuc.android.kidspos.model.entity.Item) {
                 itemNameText.text = data.name
                 itemPriceText.text = "${data.price}"
                 itemBarcodeText.text = data.barcode

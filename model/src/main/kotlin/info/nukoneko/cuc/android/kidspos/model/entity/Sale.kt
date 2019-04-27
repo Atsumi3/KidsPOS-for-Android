@@ -1,4 +1,4 @@
-package info.nukoneko.cuc.android.kidspos.entity
+package info.nukoneko.cuc.android.kidspos.model.entity
 
 import java.util.*
 

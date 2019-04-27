@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import info.nukoneko.cuc.android.kidspos.R
 import info.nukoneko.cuc.android.kidspos.databinding.FragmentStoreListDialogBinding
-import info.nukoneko.cuc.android.kidspos.entity.Store
+import info.nukoneko.cuc.android.kidspos.model.entity.Store
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class StoreListDialogFragment : DialogFragment() {
@@ -42,7 +42,7 @@ class StoreListDialogFragment : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_store_list_dialog, container, false)
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         myViewModel.listener = listener
         binding.viewModel = myViewModel
         return binding.root

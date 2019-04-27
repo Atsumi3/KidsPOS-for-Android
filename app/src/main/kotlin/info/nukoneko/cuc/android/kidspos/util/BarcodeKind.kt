@@ -7,13 +7,8 @@ enum class BarcodeKind(val prefix: String) {
     UNKNOWN("99");
 
     companion object {
-        fun prefixOf(prefix: String): BarcodeKind {
-            for (barcodePrefix in BarcodeKind.values()) {
-                if (barcodePrefix.prefix == prefix) {
-                    return barcodePrefix
-                }
-            }
-            return UNKNOWN
+        fun prefixOf(prefix: String?): BarcodeKind {
+            return values().singleOrNull { it.prefix == prefix } ?: UNKNOWN
         }
     }
 }

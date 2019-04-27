@@ -28,4 +28,4 @@
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
 
 #------ Gson -------
--keep class info.nukoneko.cuc.android.kidspos.entity.** { *; }
+-keep class info.nukoneko.cuc.android.kidspos.model.entity.** { *; }
